@@ -55,11 +55,11 @@ export const Landing = () => {
 
   return (
     <Surface style={styles.container}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.titleContainer}>
         <Title>Plotter Machine Controller</Title>
         <Text>You have to connect to the plotter machine first</Text>
       </View>
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={styles.buttonContainer}>
         <Button
           style={styles.button}
           theme={{ roundness: 2 }}
@@ -74,7 +74,9 @@ export const Landing = () => {
 };
 
 const styles = StyleSheet.create({
+  titleContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   button: { marginVertical: 10 },
+  buttonContainer: { flex: 1, justifyContent: 'center' },
   container: {
     padding: 10,
     height: '100%',
