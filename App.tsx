@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 
 import { StatusBar } from '@/components';
 import { useTheme } from '@/hooks';
@@ -15,6 +16,7 @@ export default function App() {
         <StatusBar />
         <SafeAreaView style={styles.container}>
           <Routes />
+          <Toast />
         </SafeAreaView>
       </PaperProvider>
     </NavigationContainer>

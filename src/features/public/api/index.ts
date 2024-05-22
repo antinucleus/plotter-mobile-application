@@ -1,0 +1,1 @@
+export { checkDevice } from './checkDevice';
