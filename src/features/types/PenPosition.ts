@@ -1,1 +1,1 @@
-export type PenPosition = 'up' | 'down' | 'none';
+export type PenPosition = 'up' | 'down';

@@ -8,6 +8,6 @@ type PenPositionStore = {
 };
 
 export const usePenPositionStore = create<PenPositionStore>((set) => ({
-  penPosition: 'none',
+  penPosition: 'down',
   setPenPosition: (penPosition: PenPosition) => set({ penPosition }),
 }));

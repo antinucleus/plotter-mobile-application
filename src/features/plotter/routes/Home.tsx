@@ -1,17 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import {
-  ActivityIndicator,
-  Button,
-  Divider,
-  Modal,
-  Portal,
-  Surface,
-  Text,
-  TextInput,
-} from 'react-native-paper';
+import { Button, Divider, Surface, Text, TextInput } from 'react-native-paper';
 
-import { getStatus, moveAxis, movePen } from '../api';
+import { getStatus, moveAxis, movePen, updateStatus } from '../api';
 import { DirectionList, ModeList } from '../components';
 import { AutoHomeModal } from '../components/AutoHomeModal';
 import { useAxisMovementStore, usePenPositionStore } from '../stores';
@@ -20,10 +11,12 @@ import { useToast } from '@/hooks';
 
 export const Home = () => {
   const { direction, driveMode } = useAxisMovementStore();
-  const [distance, setDistance] = useState('');
-  const [showModal, setShowModal] = useState(false);
   const { penPosition, setPenPosition } = usePenPositionStore();
   const { showToast } = useToast();
+  const [distance, setDistance] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [fetchStatus, setFetchStatus] = useState(false);
+  const [fetchCount, setFetchCount] = useState(0);
 
   const handleDistanceInputChange = (e: string) => {
     if (isNaN(Number(e))) return;
@@ -55,6 +48,7 @@ export const Home = () => {
 
   const handleMoveAxis = async (axis: string) => {
     const response = await moveAxis({
+      driveMode,
       direction,
       isMovingX: axis === 'x' ? 'yes' : 'no',
       isMovingY: axis === 'y' ? 'yes' : 'no',
@@ -69,14 +63,42 @@ export const Home = () => {
     const status = await getStatus();
 
     if (status) {
-      console.log('STATUS:', status);
+      console.log('AutoHoming:', status.autoHoming);
+      if (status.autoHoming === 'no') {
+        setFetchStatus(false);
+        setShowModal(false);
+      }
     }
   };
+
+  const setAutoHoming = async () => {
+    const response = await updateStatus({ autoHoming: 'yes' });
+
+    if (response) {
+      console.log('Set Auto Home Response:', response);
+      setFetchStatus(true);
+    }
+  };
+
+  useEffect(() => {
+    setAutoHoming();
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (fetchStatus) {
+        getAutoHome();
+        setFetchCount((pc) => pc + 1);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [fetchStatus, fetchCount]);
 
   return (
     <Surface style={styles.container}>
       <AutoHomeModal showModal={showModal} />
-      <Button onPress={getAutoHome}>Get Status</Button>
+      <Button onPress={getAutoHome}>Get AutoHome Status</Button>
       <View style={styles.changePenPosition}>
         <Text variant="titleMedium">Change pen position</Text>
         <View style={styles.penControlButtons}>
@@ -141,16 +163,6 @@ const styles = StyleSheet.create({
   changePenPosition: { justifyContent: 'center' },
   container: { height: '100%', padding: 10, justifyContent: 'space-between' },
   directionText: { marginVertical: 10 },
-  modalContent: {
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  modalContentContainer: {
-    flex: 1 / 4,
-    margin: 10,
-  },
   moveAxisContainer: { marginVertical: 10 },
   moveAxisTitle: { marginVertical: 10 },
   penControlButtons: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 },

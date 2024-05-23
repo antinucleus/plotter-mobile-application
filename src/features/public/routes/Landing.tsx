@@ -65,6 +65,7 @@ export const Landing = () => {
           theme={{ roundness: 2 }}
           mode="contained"
           loading={isConnecting}
+          disabled={isConnecting}
           onPress={getConnectionType}>
           Check Connection
         </Button>

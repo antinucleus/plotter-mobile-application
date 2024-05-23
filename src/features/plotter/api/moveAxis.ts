@@ -1,7 +1,8 @@
-import { Direction, State } from '@/features/types';
+import { Direction, DriveMode, State } from '@/features/types';
 import { axios } from '@/lib';
 
 type Parameters = {
+  driveMode: DriveMode;
   direction: Direction;
   isMovingX: State;
   isMovingY: State;

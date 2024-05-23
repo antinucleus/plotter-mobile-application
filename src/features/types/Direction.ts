@@ -1,1 +1,1 @@
-export type Direction = '+' | '-' | 'none';
+export type Direction = '+' | '-';
