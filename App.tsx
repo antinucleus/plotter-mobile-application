@@ -16,7 +16,7 @@ export default function App() {
         <StatusBar />
         <SafeAreaView style={styles.container}>
           <Routes />
-          <Toast />
+          <Toast position="bottom" />
         </SafeAreaView>
       </PaperProvider>
     </NavigationContainer>

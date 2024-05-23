@@ -11,6 +11,8 @@ export const checkDevice = async () => {
     if (status === 200) {
       return data.isDeviceConnected;
     }
+
+    return null;
   } catch (error) {
     console.log('Error occured:', error);
     return null;
