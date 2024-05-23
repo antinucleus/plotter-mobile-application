@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { RadioButton } from 'react-native-paper';
 
 import { RadioOption } from './RadioOption';
+import { useAxisMovementStore } from '../stores';
 
-type OptionTypes = 'FullStep' | 'HalfStep' | 'QuarterStep' | 'EighthStep' | 'SixteenthStep';
+import { DriveMode } from '@/features/types';
 
 type Option = {
   title: string;
-  option: OptionTypes;
+  option: DriveMode;
 };
 
 const options: Option[] = [
@@ -19,16 +20,16 @@ const options: Option[] = [
 ];
 
 export const ModeList = () => {
-  const [option, setOption] = useState<OptionTypes>('FullStep');
+  const { driveMode, setDriveMode } = useAxisMovementStore();
 
-  const handleRadioValueChange = (value: string) => setOption(value as OptionTypes);
+  const handleRadioValueChange = (value: string) => setDriveMode(value as DriveMode);
 
   useEffect(() => {
-    console.log({ option });
-  }, [option]);
+    console.log({ driveMode });
+  }, [driveMode]);
 
   return (
-    <RadioButton.Group value={option} onValueChange={handleRadioValueChange}>
+    <RadioButton.Group value={driveMode} onValueChange={handleRadioValueChange}>
       {options.map((opt, i) => (
         <RadioOption key={`radio-option-${i}-${opt.option}`} {...opt} />
       ))}

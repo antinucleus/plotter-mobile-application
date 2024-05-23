@@ -3,8 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 
 import { RadioOption } from './RadioOption';
+import { useAxisMovementStore } from '../stores';
 
-type Direction = 'positive' | 'negative';
+import { Direction } from '@/features/types';
 
 type Option = {
   title: string;
@@ -12,12 +13,12 @@ type Option = {
 };
 
 const options: Option[] = [
-  { title: 'Positive direction', option: 'positive' },
-  { title: 'Negative direction', option: 'negative' },
+  { title: 'Positive direction', option: '+' },
+  { title: 'Negative direction', option: '-' },
 ];
 
 export const DirectionList = () => {
-  const [direction, setDirection] = useState<Direction>('positive');
+  const { direction, setDirection } = useAxisMovementStore();
 
   const handleRadioValueChange = (value: string) => setDirection(value as Direction);
 
