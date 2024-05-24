@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Divider, HelperText, Surface, Text, TextInput } from 'react-native-paper';
 
 import { getMachinePosition, getStatus, moveAxis, movePen, updateStatus } from '../api';
@@ -7,9 +7,11 @@ import { DirectionList, ModeList } from '../components';
 import { AutoHomeModal } from '../components/AutoHomeModal';
 import { useAxisMovementStore, useAxisPositionStore, usePenPositionStore } from '../stores';
 
-import { useToast } from '@/hooks';
+import { FETCH_INTERVAL, MACHINE_AXIS_X_LIMIT, MACHINE_AXIS_Y_LIMIT } from '@/config';
+import { useTheme, useToast } from '@/hooks';
 
 export const Home = () => {
+  const { colors } = useTheme();
   const { direction, driveMode } = useAxisMovementStore();
   const { penPosition, setPenPosition } = usePenPositionStore();
   const { axisPosition, setAxisPosition } = useAxisPositionStore();
@@ -18,29 +20,14 @@ export const Home = () => {
   const [showModal, setShowModal] = useState(true);
   const [fetchStatus, setFetchStatus] = useState(false);
   const [fetchPosition, setFetchPosition] = useState(true);
-  const [fetchCount, setFetchCount] = useState(0);
-  const [showError, setShowError] = useState(false);
+  const [fetchCounter, setFetchCounter] = useState(0);
   const [disableMoveAxisX, setDisableMoveAxisX] = useState(false);
   const [disableMoveAxisY, setDisableMoveAxisY] = useState(false);
+  const [isMovingX, setIsMovingX] = useState(false);
+  const [isMovingY, setIsMovingY] = useState(false);
 
   const handleDistanceInputChange = (e: string) => {
     if (isNaN(Number(e))) return;
-
-    // add positive side section
-    if (direction === '-' && axisPosition.x - Number(e) < 0) {
-      setShowError(true);
-      setDisableMoveAxisX(true);
-    } else {
-      setDisableMoveAxisX(false);
-    }
-
-    // add positive side section
-    if (direction === '-' && axisPosition.y - Number(e) < 0) {
-      setShowError(true);
-      setDisableMoveAxisY(true);
-    } else {
-      setDisableMoveAxisY(false);
-    }
 
     setDistance(e);
   };
@@ -98,16 +85,18 @@ export const Home = () => {
 
     if (status) {
       if (status.isMovingX === 'yes') {
-        setDisableMoveAxisX(true);
+        setIsMovingX(true);
       } else {
-        setDisableMoveAxisX(false);
+        setIsMovingX(false);
       }
 
       if (status.isMovingY === 'yes') {
-        setDisableMoveAxisY(true);
+        setIsMovingY(true);
       } else {
-        setDisableMoveAxisY(false);
+        setIsMovingY(false);
       }
+
+      setPenPosition(status.penPosition);
     }
   };
 
@@ -116,7 +105,7 @@ export const Home = () => {
 
     if (position) {
       console.log('Position:', position);
-      setAxisPosition(position);
+      setAxisPosition({ x: Number(position.x), y: Number(position.y) });
     }
   };
 
@@ -124,23 +113,35 @@ export const Home = () => {
     const response = await updateStatus({ autoHoming: 'yes' });
 
     if (response) {
-      console.log('Set Auto Home Response:', response);
+      console.log('Set Auto Home Responsee:', response);
       setFetchStatus(true);
+    }
+  };
+
+  const handlePlotImage = async () => {
+    const response = await updateStatus({ startPlotting: 'yes' });
+
+    if (response) {
+      showToast({ type: 'info', text1: 'Plotting' });
     }
   };
 
   useEffect(() => {
     // add positive side section
-    if (direction === '-' && axisPosition.x - Number(distance) < 0) {
-      setShowError(true);
+    if (
+      (direction === '-' && axisPosition.x - Number(distance) < 0) ||
+      (direction === '+' && axisPosition.x + Number(distance) > MACHINE_AXIS_X_LIMIT)
+    ) {
       setDisableMoveAxisX(true);
     } else {
       setDisableMoveAxisX(false);
     }
 
     // add positive side section
-    if (direction === '-' && axisPosition.y - Number(distance) < 0) {
-      setShowError(true);
+    if (
+      (direction === '-' && axisPosition.y - Number(distance) < 0) ||
+      (direction === '+' && axisPosition.y + Number(distance) > MACHINE_AXIS_Y_LIMIT)
+    ) {
       setDisableMoveAxisY(true);
     } else {
       setDisableMoveAxisY(false);
@@ -155,21 +156,23 @@ export const Home = () => {
     const timer = setTimeout(() => {
       if (fetchStatus) {
         getAutoHome();
-        setFetchCount((pc) => pc + 1);
+        setFetchCounter((pc) => pc + 1);
       }
 
       if (fetchPosition) {
-        // getAxisMovementStatus();
+        getAxisMovementStatus();
         getPosition();
-        setFetchCount((pc) => pc + 1);
+        setFetchCounter((pc) => pc + 1);
       }
-    }, 1000);
+    }, FETCH_INTERVAL);
 
     return () => clearTimeout(timer);
-  }, [fetchStatus, fetchPosition, fetchCount]);
+  }, [fetchStatus, fetchPosition, fetchCounter]);
 
   return (
-    <Surface style={styles.container}>
+    <ScrollView
+      style={[styles.scrollView, { backgroundColor: colors.surface }]}
+      contentContainerStyle={styles.scrollViewContentContainer}>
       <AutoHomeModal showModal={showModal} />
       <Button onPress={getAutoHome}>Get AutoHome Status</Button>
       <View style={styles.changePenPosition}>
@@ -219,14 +222,14 @@ export const Home = () => {
 
       <View style={styles.penControlButtons}>
         <Button
-          disabled={disableMoveAxisX}
+          disabled={disableMoveAxisX || isMovingX}
           theme={{ roundness: 2 }}
           mode="contained"
           onPress={() => handleMoveAxis('x')}>
           Move X Axis
         </Button>
         <Button
-          disabled={disableMoveAxisY}
+          disabled={disableMoveAxisY || isMovingY}
           theme={{ roundness: 2 }}
           mode="contained"
           onPress={() => handleMoveAxis('y')}>
@@ -234,21 +237,22 @@ export const Home = () => {
         </Button>
       </View>
       <Divider />
-
-      <View>
-        <Button theme={{ roundness: 2 }} mode="contained" onPress={handlePenDown}>
+      <View style={styles.plotButtonContainer}>
+        <Button theme={{ roundness: 2 }} mode="contained" onPress={handlePlotImage}>
           Plot Image
         </Button>
       </View>
-    </Surface>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   changePenPosition: { justifyContent: 'center' },
-  container: { height: '100%', padding: 10, justifyContent: 'space-between' },
   directionText: { marginVertical: 10 },
   moveAxisContainer: { marginVertical: 10 },
   moveAxisTitle: { marginVertical: 10 },
   penControlButtons: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 },
+  plotButtonContainer: { marginVertical: 10 },
+  scrollView: { flex: 1 },
+  scrollViewContentContainer: { padding: 10, justifyContent: 'space-between' },
 });
