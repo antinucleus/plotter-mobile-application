@@ -1,25 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, Divider, Surface, Text, TextInput } from 'react-native-paper';
+import { Button, Divider, HelperText, Surface, Text, TextInput } from 'react-native-paper';
 
-import { getStatus, moveAxis, movePen, updateStatus } from '../api';
+import { getMachinePosition, getStatus, moveAxis, movePen, updateStatus } from '../api';
 import { DirectionList, ModeList } from '../components';
 import { AutoHomeModal } from '../components/AutoHomeModal';
-import { useAxisMovementStore, usePenPositionStore } from '../stores';
+import { useAxisMovementStore, useAxisPositionStore, usePenPositionStore } from '../stores';
 
 import { useToast } from '@/hooks';
 
 export const Home = () => {
   const { direction, driveMode } = useAxisMovementStore();
   const { penPosition, setPenPosition } = usePenPositionStore();
+  const { axisPosition, setAxisPosition } = useAxisPositionStore();
   const { showToast } = useToast();
   const [distance, setDistance] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const [fetchStatus, setFetchStatus] = useState(false);
+  const [fetchPosition, setFetchPosition] = useState(true);
   const [fetchCount, setFetchCount] = useState(0);
+  const [showError, setShowError] = useState(false);
+  const [disableMoveAxisX, setDisableMoveAxisX] = useState(false);
+  const [disableMoveAxisY, setDisableMoveAxisY] = useState(false);
 
   const handleDistanceInputChange = (e: string) => {
     if (isNaN(Number(e))) return;
+
+    // add positive side section
+    if (direction === '-' && axisPosition.x - Number(e) < 0) {
+      setShowError(true);
+      setDisableMoveAxisX(true);
+    } else {
+      setDisableMoveAxisX(false);
+    }
+
+    // add positive side section
+    if (direction === '-' && axisPosition.y - Number(e) < 0) {
+      setShowError(true);
+      setDisableMoveAxisY(true);
+    } else {
+      setDisableMoveAxisY(false);
+    }
 
     setDistance(e);
   };
@@ -71,6 +92,34 @@ export const Home = () => {
     }
   };
 
+  const getAxisMovementStatus = async () => {
+    //CHECK HERE
+    const status = await getStatus();
+
+    if (status) {
+      if (status.isMovingX === 'yes') {
+        setDisableMoveAxisX(true);
+      } else {
+        setDisableMoveAxisX(false);
+      }
+
+      if (status.isMovingY === 'yes') {
+        setDisableMoveAxisY(true);
+      } else {
+        setDisableMoveAxisY(false);
+      }
+    }
+  };
+
+  const getPosition = async () => {
+    const position = await getMachinePosition();
+
+    if (position) {
+      console.log('Position:', position);
+      setAxisPosition(position);
+    }
+  };
+
   const setAutoHoming = async () => {
     const response = await updateStatus({ autoHoming: 'yes' });
 
@@ -79,6 +128,24 @@ export const Home = () => {
       setFetchStatus(true);
     }
   };
+
+  useEffect(() => {
+    // add positive side section
+    if (direction === '-' && axisPosition.x - Number(distance) < 0) {
+      setShowError(true);
+      setDisableMoveAxisX(true);
+    } else {
+      setDisableMoveAxisX(false);
+    }
+
+    // add positive side section
+    if (direction === '-' && axisPosition.y - Number(distance) < 0) {
+      setShowError(true);
+      setDisableMoveAxisY(true);
+    } else {
+      setDisableMoveAxisY(false);
+    }
+  }, [direction, axisPosition, distance]);
 
   useEffect(() => {
     setAutoHoming();
@@ -90,10 +157,16 @@ export const Home = () => {
         getAutoHome();
         setFetchCount((pc) => pc + 1);
       }
+
+      if (fetchPosition) {
+        // getAxisMovementStatus();
+        getPosition();
+        setFetchCount((pc) => pc + 1);
+      }
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [fetchStatus, fetchCount]);
+  }, [fetchStatus, fetchPosition, fetchCount]);
 
   return (
     <Surface style={styles.container}>
@@ -132,8 +205,12 @@ export const Home = () => {
           autoCorrect={false}
           mode="outlined"
           value={distance}
+          error={disableMoveAxisX || disableMoveAxisY}
           onChangeText={handleDistanceInputChange}
         />
+        <HelperText type="error" visible={disableMoveAxisX || disableMoveAxisY}>
+          You cannot exceed the machine axis limit
+        </HelperText>
         <Text style={styles.directionText} variant="titleMedium">
           Select movement direction
         </Text>
@@ -141,10 +218,18 @@ export const Home = () => {
       </View>
 
       <View style={styles.penControlButtons}>
-        <Button theme={{ roundness: 2 }} mode="contained" onPress={() => handleMoveAxis('x')}>
+        <Button
+          disabled={disableMoveAxisX}
+          theme={{ roundness: 2 }}
+          mode="contained"
+          onPress={() => handleMoveAxis('x')}>
           Move X Axis
         </Button>
-        <Button theme={{ roundness: 2 }} mode="contained" onPress={() => handleMoveAxis('y')}>
+        <Button
+          disabled={disableMoveAxisY}
+          theme={{ roundness: 2 }}
+          mode="contained"
+          onPress={() => handleMoveAxis('y')}>
           Move Y Axis
         </Button>
       </View>
