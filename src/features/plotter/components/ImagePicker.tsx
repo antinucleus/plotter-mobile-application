@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 
+import { useSelectedImageStore } from '../stores';
+
 const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 export const ImagePicker = () => {
-  const [image, setImage] = useState<null | string>(null);
+  const { image, setImage } = useSelectedImageStore();
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
