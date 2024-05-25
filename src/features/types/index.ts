@@ -4,3 +4,7 @@ export type { State } from './State';
 export type { DriveMode } from './DriveMode';
 export type { StatusResponse } from './StatusResponse';
 export type { AxisPosition } from './AxisPosition';
+export type {
+  GcodeConfigInitialValues,
+  OptionalGcodeConfigInitialValues,
+} from './GcodeConfigInitialValues';

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { HelperText, TextInput } from 'react-native-paper';
 
@@ -16,10 +16,6 @@ export const AdjustProperties = () => {
 
     setValues({ sampleCount: v });
   };
-
-  useEffect(() => {
-    console.log({ values });
-  }, [values]);
 
   return (
     <ScrollView>

@@ -1,16 +1,8 @@
-import { Optional } from 'utility-types';
 import { create } from 'zustand';
 
-type InitialValues = {
-  lineNumbering: boolean;
-  initialCommand: string[];
-  sampleCount: string;
-  fill: boolean;
-};
+import { GcodeConfigInitialValues, OptionalGcodeConfigInitialValues } from '@/features/types';
 
-type OptionalInitialValues = Optional<InitialValues>;
-
-const initialValues: InitialValues = {
+const initialValues: GcodeConfigInitialValues = {
   lineNumbering: false,
   initialCommand: [],
   sampleCount: '30',
@@ -18,12 +10,12 @@ const initialValues: InitialValues = {
 };
 
 type PlottingPropertiesStore = {
-  values: InitialValues;
-  setValues: (values: OptionalInitialValues) => void;
+  values: GcodeConfigInitialValues;
+  setValues: (values: OptionalGcodeConfigInitialValues) => void;
 };
 
 export const usePlottingPropertiesStore = create<PlottingPropertiesStore>((set, get) => ({
   values: initialValues,
-  setValues: (newValues: OptionalInitialValues) =>
-    set({ values: { ...get().values, ...(newValues as InitialValues) } }),
+  setValues: (newValues: OptionalGcodeConfigInitialValues) =>
+    set({ values: { ...get().values, ...(newValues as GcodeConfigInitialValues) } }),
 }));

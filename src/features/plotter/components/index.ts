@@ -5,3 +5,4 @@ export { AutoHomeModal } from './AutoHomeModal';
 export { BreadCrumb } from './BreadCrumb';
 export { AdjustProperties } from './AdjustProperties';
 export { Step } from './Step';
+export { Preview } from './Preview';

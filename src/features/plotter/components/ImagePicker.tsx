@@ -1,8 +1,8 @@
 import { Image } from 'expo-image';
 import * as ExpoImagePicker from 'expo-image-picker';
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, Card } from 'react-native-paper';
+import React from 'react';
+import { StyleSheet, View, Platform } from 'react-native';
+import { Button } from 'react-native-paper';
 
 import { useSelectedImageStore } from '../stores';
 
@@ -13,7 +13,6 @@ export const ImagePicker = () => {
   const { image, setImage } = useSelectedImageStore();
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     const result = await ExpoImagePicker.launchImageLibraryAsync({
       mediaTypes: ExpoImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -24,7 +23,17 @@ export const ImagePicker = () => {
     console.log(result);
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const uri =
+        Platform.OS === 'android'
+          ? result.assets[0].uri
+          : result.assets[0].uri.replace('file://', '');
+
+      const filename = result.assets[0].uri.split('/').pop();
+      const match = /\.(\w+)$/.exec(filename as string);
+      const ext = match?.[1];
+      const type = match ? `image/${match[1]}` : 'image';
+
+      setImage({ uri, imageType: type, imageName: `image.${ext}` });
     }
   };
 
@@ -33,12 +42,12 @@ export const ImagePicker = () => {
       <Button mode="contained" theme={{ roundness: 2 }} onPress={pickImage}>
         Pick an image
       </Button>
-      {image && (
+      {image.uri && (
         <View style={styles.imageContainer}>
           <Image
             style={styles.image}
             placeholder={{ blurhash }}
-            source={{ uri: image }}
+            source={{ uri: image.uri }}
             contentFit="contain"
             transition={500}
           />

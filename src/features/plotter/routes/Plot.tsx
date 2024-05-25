@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Button, Divider, Surface } from 'react-native-paper';
 
-import { ImagePicker, BreadCrumb, Step, AdjustProperties } from '../components';
+import { ImagePicker, BreadCrumb, Step, AdjustProperties, Preview } from '../components';
 import { useSelectedImageStore, usePlottingPropertiesStore } from '../stores';
 
 type StepItem = {
@@ -44,9 +44,10 @@ export const Plot = () => {
 
       {activeStep === 0 && <ImagePicker />}
       {activeStep === 1 && <AdjustProperties />}
+      {activeStep === 2 && <Preview />}
 
       <Button
-        disabled={activeStep === steps.length - 1 || !image || !values.sampleCount}
+        disabled={activeStep === steps.length - 1 || !image.uri || !values.sampleCount}
         onPress={handleNext}>
         Next
       </Button>
