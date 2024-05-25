@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Divider, HelperText, Surface, Text, TextInput } from 'react-native-paper';
+import { Button, Divider, HelperText, Text, TextInput } from 'react-native-paper';
 
 import { getMachinePosition, getStatus, moveAxis, movePen, updateStatus } from '../api';
-import { DirectionList, ModeList } from '../components';
-import { AutoHomeModal } from '../components/AutoHomeModal';
+import { DirectionList, ModeList, AutoHomeModal } from '../components';
 import { useAxisMovementStore, useAxisPositionStore, usePenPositionStore } from '../stores';
 
 import { FETCH_INTERVAL, MACHINE_AXIS_X_LIMIT, MACHINE_AXIS_Y_LIMIT } from '@/config';
