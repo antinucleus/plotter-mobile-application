@@ -6,8 +6,7 @@ import { Button } from 'react-native-paper';
 
 import { useSelectedImageStore } from '../stores';
 
-const blurhash =
-  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+import { BLURLASH } from '@/config';
 
 export const ImagePicker = () => {
   const { image, setImage } = useSelectedImageStore();
@@ -46,7 +45,7 @@ export const ImagePicker = () => {
         <View style={styles.imageContainer}>
           <Image
             style={styles.image}
-            placeholder={{ blurhash }}
+            placeholder={{ blurhash: BLURLASH }}
             source={{ uri: image.uri }}
             contentFit="contain"
             transition={500}

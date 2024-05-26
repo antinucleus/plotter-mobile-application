@@ -6,7 +6,7 @@ type Parameters = {
 
 export const uploadImage = async ({ image }: Parameters) => {
   try {
-    const { status, data } = await axios.post<string>('/upload/image', image, {
+    const { status, data } = await axios.post<string>('/media/image', image, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

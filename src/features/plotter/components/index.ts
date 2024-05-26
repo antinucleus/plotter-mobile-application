@@ -6,3 +6,5 @@ export { BreadCrumb } from './BreadCrumb';
 export { AdjustProperties } from './AdjustProperties';
 export { Step } from './Step';
 export { Preview } from './Preview';
+export { PlotImage } from './PlotImage';
+export { MovePen } from './MovePen';

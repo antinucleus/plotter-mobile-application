@@ -1,9 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Divider, Surface } from 'react-native-paper';
 
-import { ImagePicker, BreadCrumb, Step, AdjustProperties, Preview } from '../components';
-import { useSelectedImageStore, usePlottingPropertiesStore } from '../stores';
+import { updateStatus } from '../api';
+import { ImagePicker, BreadCrumb, Step, AdjustProperties, Preview, PlotImage } from '../components';
+import { useSelectedImageStore, usePlottingPropertiesStore, useControlStore } from '../stores';
+
+import { useToast } from '@/hooks';
+import { PrivateRoutesScreenNavigationProp } from '@/types';
 
 type StepItem = {
   title: string;
@@ -24,11 +29,27 @@ const steps: StepItem[] = [
 ];
 
 export const Plot = () => {
+  const navigation = useNavigation<PrivateRoutesScreenNavigationProp>();
   const [activeStep, setActiveStep] = useState(0);
   const { image } = useSelectedImageStore();
   const { values } = usePlottingPropertiesStore();
+  const { setIsExited, isDisabled } = useControlStore();
+  const { showToast } = useToast();
+
+  const handleStopPlotImage = async () => {
+    const response = await updateStatus({ startPlotting: 'no' });
+
+    if (response) {
+      showToast({ type: 'info', text1: 'Plotting is stopped' });
+    }
+  };
 
   const handleNext = () => setActiveStep((ps) => ps + 1);
+  const handleExit = () => {
+    handleStopPlotImage();
+    setIsExited(true);
+    navigation.navigate('Home');
+  };
 
   return (
     <Surface style={styles.container}>
@@ -45,18 +66,27 @@ export const Plot = () => {
       {activeStep === 0 && <ImagePicker />}
       {activeStep === 1 && <AdjustProperties />}
       {activeStep === 2 && <Preview />}
+      {activeStep === 3 && <PlotImage />}
 
-      <Button
-        disabled={activeStep === steps.length - 1 || !image.uri || !values.sampleCount}
-        onPress={handleNext}>
-        Next
-      </Button>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Button disabled={isDisabled} onPress={handleExit}>
+          Exit
+        </Button>
+        <Button
+          mode="contained"
+          disabled={
+            activeStep === steps.length - 1 || !image.uri || !values.sampleCount || isDisabled
+          }
+          onPress={handleNext}>
+          Next
+        </Button>
+      </View>
     </Surface>
   );
 };
 
 const styles = StyleSheet.create({
+  container: { height: '100%', padding: 10 },
   avatarContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 10 },
   avatarText: { marginLeft: 10 },
-  container: { height: '100%', padding: 10 },
 });

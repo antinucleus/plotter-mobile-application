@@ -3,3 +3,4 @@ export { useAxisMovementStore } from './axisMovementStore';
 export { useAxisPositionStore } from './axisPositionStore';
 export { useSelectedImageStore } from './selectedImageStore';
 export { usePlottingPropertiesStore } from './plottingPropertiesStore';
+export { useControlStore } from './controlStore';

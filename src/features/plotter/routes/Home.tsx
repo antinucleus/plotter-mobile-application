@@ -1,20 +1,29 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Divider, HelperText, Text, TextInput } from 'react-native-paper';
 
-import { getMachinePosition, getStatus, moveAxis, movePen, updateStatus } from '../api';
-import { DirectionList, ModeList, AutoHomeModal } from '../components';
-import { useAxisMovementStore, useAxisPositionStore, usePenPositionStore } from '../stores';
+import { getMachinePosition, getStatus, updateStatus } from '../api';
+import { DirectionList, ModeList, AutoHomeModal, MovePen } from '../components';
+import { MoveAxis } from '../components/MoveAxis';
+import {
+  useAxisMovementStore,
+  useAxisPositionStore,
+  useControlStore,
+  usePenPositionStore,
+} from '../stores';
 
 import { FETCH_INTERVAL, MACHINE_AXIS_X_LIMIT, MACHINE_AXIS_Y_LIMIT } from '@/config';
-import { useTheme, useToast } from '@/hooks';
+import { useTheme } from '@/hooks';
+import { PrivateRoutesScreenNavigationProp } from '@/types';
 
 export const Home = () => {
+  const navigation = useNavigation<PrivateRoutesScreenNavigationProp>();
   const { colors } = useTheme();
-  const { direction, driveMode } = useAxisMovementStore();
-  const { penPosition, setPenPosition } = usePenPositionStore();
+  const { direction } = useAxisMovementStore();
+  const { setPenPosition } = usePenPositionStore();
   const { axisPosition, setAxisPosition } = useAxisPositionStore();
-  const { showToast } = useToast();
+  const { isExited, setIsExited } = useControlStore();
   const [distance, setDistance] = useState('');
   const [showModal, setShowModal] = useState(true);
   const [fetchStatus, setFetchStatus] = useState(false);
@@ -31,41 +40,6 @@ export const Home = () => {
     setDistance(e);
   };
 
-  const handlePenUp = async () => {
-    const result = await movePen({ penPosition: 'up' });
-
-    if (result) {
-      console.log({ result });
-      setPenPosition('up');
-    } else {
-      showToast({ type: 'error', text1: 'Pen cannot be moved' });
-    }
-  };
-
-  const handlePenDown = async () => {
-    const result = await movePen({ penPosition: 'down' });
-
-    if (result) {
-      console.log({ result });
-      setPenPosition('down');
-    } else {
-      showToast({ type: 'error', text1: 'Pen cannot be moved' });
-    }
-  };
-
-  const handleMoveAxis = async (axis: string) => {
-    const response = await moveAxis({
-      driveMode,
-      direction,
-      isMovingX: axis === 'x' ? 'yes' : 'no',
-      isMovingY: axis === 'y' ? 'yes' : 'no',
-      targetDistanceX: axis === 'x' ? Number(distance) : 0,
-      targetDistanceY: axis === 'y' ? Number(distance) : 0,
-    });
-
-    console.log({ response });
-  };
-
   const getAutoHome = async () => {
     const status = await getStatus();
 
@@ -74,6 +48,7 @@ export const Home = () => {
       if (status.autoHoming === 'no') {
         setFetchStatus(false);
         setShowModal(false);
+        setIsExited(false);
       }
     }
   };
@@ -83,17 +58,8 @@ export const Home = () => {
     const status = await getStatus();
 
     if (status) {
-      if (status.isMovingX === 'yes') {
-        setIsMovingX(true);
-      } else {
-        setIsMovingX(false);
-      }
-
-      if (status.isMovingY === 'yes') {
-        setIsMovingY(true);
-      } else {
-        setIsMovingY(false);
-      }
+      setIsMovingX(status.isMovingX === 'yes');
+      setIsMovingY(status.isMovingY === 'yes');
 
       setPenPosition(status.penPosition);
     }
@@ -117,13 +83,7 @@ export const Home = () => {
     }
   };
 
-  const handlePlotImage = async () => {
-    const response = await updateStatus({ startPlotting: 'yes' });
-
-    if (response) {
-      showToast({ type: 'info', text1: 'Plotting' });
-    }
-  };
+  const handlePlotImage = async () => navigation.navigate('Plot');
 
   useEffect(() => {
     // add positive side section
@@ -152,6 +112,13 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
+    if (isExited) {
+      setShowModal(true);
+      setAutoHoming();
+    }
+  }, [isExited]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       if (fetchStatus) {
         getAutoHome();
@@ -174,25 +141,7 @@ export const Home = () => {
       contentContainerStyle={styles.scrollViewContentContainer}>
       <AutoHomeModal showModal={showModal} />
       <Button onPress={getAutoHome}>Get AutoHome Status</Button>
-      <View style={styles.changePenPosition}>
-        <Text variant="titleMedium">Change pen position</Text>
-        <View style={styles.penControlButtons}>
-          <Button
-            disabled={penPosition === 'up'}
-            theme={{ roundness: 2 }}
-            mode="contained"
-            onPress={handlePenUp}>
-            Pen up
-          </Button>
-          <Button
-            disabled={penPosition === 'down'}
-            theme={{ roundness: 2 }}
-            mode="contained"
-            onPress={handlePenDown}>
-            Pen down
-          </Button>
-        </View>
-      </View>
+      <MovePen />
       <Divider />
       <View style={styles.moveAxisContainer}>
         <Text variant="titleMedium">Select movement mode</Text>
@@ -218,23 +167,13 @@ export const Home = () => {
         </Text>
         <DirectionList />
       </View>
-
-      <View style={styles.penControlButtons}>
-        <Button
-          disabled={disableMoveAxisX || isMovingX}
-          theme={{ roundness: 2 }}
-          mode="contained"
-          onPress={() => handleMoveAxis('x')}>
-          Move X Axis
-        </Button>
-        <Button
-          disabled={disableMoveAxisY || isMovingY}
-          theme={{ roundness: 2 }}
-          mode="contained"
-          onPress={() => handleMoveAxis('y')}>
-          Move Y Axis
-        </Button>
-      </View>
+      <MoveAxis
+        disableMoveAxisX={disableMoveAxisX}
+        disableMoveAxisY={disableMoveAxisY}
+        distance={distance}
+        isMovingX={isMovingX}
+        isMovingY={isMovingY}
+      />
       <Divider />
       <View style={styles.plotButtonContainer}>
         <Button theme={{ roundness: 2 }} mode="contained" onPress={handlePlotImage}>
@@ -246,11 +185,9 @@ export const Home = () => {
 };
 
 const styles = StyleSheet.create({
-  changePenPosition: { justifyContent: 'center' },
   directionText: { marginVertical: 10 },
   moveAxisContainer: { marginVertical: 10 },
   moveAxisTitle: { marginVertical: 10 },
-  penControlButtons: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 },
   plotButtonContainer: { marginVertical: 10 },
   scrollView: { flex: 1 },
   scrollViewContentContainer: { padding: 10, justifyContent: 'space-between' },
