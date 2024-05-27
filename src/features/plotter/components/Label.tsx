@@ -14,7 +14,7 @@ export const Label = ({ children, title, description }: Props) => {
   return (
     <View>
       <View style={styles.titleContainer}>
-        <Text variant="titleMedium">{title}</Text>
+        <Text variant="titleSmall">{title}</Text>
         {children}
         <IconButton
           icon="information"

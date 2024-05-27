@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 import * as ExpoImagePicker from 'expo-image-picker';
 import React from 'react';
 import { StyleSheet, View, Platform } from 'react-native';
@@ -19,15 +20,26 @@ export const ImagePicker = () => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
-      const uri =
-        Platform.OS === 'android'
-          ? result.assets[0].uri
-          : result.assets[0].uri.replace('file://', '');
+      const w = result.assets[0].width;
+      const h = result.assets[0].height;
+      const ar = w / h;
 
-      const filename = result.assets[0].uri.split('/').pop();
+      const newh = 500;
+
+      const manipResult = await manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { height: newh, width: newh * ar } }],
+        {
+          compress: 1,
+          format: SaveFormat.JPEG,
+        },
+      );
+
+      const uri =
+        Platform.OS === 'android' ? manipResult.uri : manipResult.uri.replace('file://', '');
+
+      const filename = manipResult.uri.split('/').pop();
       const match = /\.(\w+)$/.exec(filename as string);
       const ext = match?.[1];
       const type = match ? `image/${match[1]}` : 'image';

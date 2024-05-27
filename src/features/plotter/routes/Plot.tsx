@@ -13,15 +13,16 @@ import { PrivateRoutesScreenNavigationProp } from '@/types';
 type StepItem = {
   title: string;
 };
+
 const steps: StepItem[] = [
   {
     title: 'Select image that you want to plot',
   },
   {
-    title: 'Adjust machine properties',
+    title: 'Preview',
   },
   {
-    title: 'Preview',
+    title: 'Adjust machine properties',
   },
   {
     title: 'Plot the image',
@@ -64,8 +65,8 @@ export const Plot = () => {
       )}
 
       {activeStep === 0 && <ImagePicker />}
-      {activeStep === 1 && <AdjustProperties />}
-      {activeStep === 2 && <Preview />}
+      {activeStep === 1 && <Preview />}
+      {activeStep === 2 && <AdjustProperties />}
       {activeStep === 3 && <PlotImage />}
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

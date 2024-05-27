@@ -6,3 +6,6 @@ export { getMachinePosition } from './getMachinePosition';
 export { uploadImage } from './uploadImage';
 export { downloadImage } from './downloadImage';
 export { updateGcodeConfig } from './updateGcodeConfig';
+export { convertImagetoSvg } from './convertImagetoSvg';
+export { generateGcode } from './generateGcode';
+export { getGcode } from './getGcode';

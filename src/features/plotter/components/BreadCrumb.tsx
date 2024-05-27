@@ -12,10 +12,10 @@ const items: Item[] = [
     title: 'Select Image',
   },
   {
-    title: 'Adjust Properties',
+    title: 'Preview',
   },
   {
-    title: 'Preview',
+    title: 'Adjust Properties',
   },
   { title: 'Plot Image' },
 ];

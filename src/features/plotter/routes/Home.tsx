@@ -69,7 +69,7 @@ export const Home = () => {
     const position = await getMachinePosition();
 
     if (position) {
-      console.log('Position:', position);
+      // console.log('Position:', position);
       setAxisPosition({ x: Number(position.x), y: Number(position.y) });
     }
   };

@@ -4,6 +4,7 @@ import { HelperText, TextInput } from 'react-native-paper';
 
 import { CustomSwitch } from './CustomSwitch';
 import { Label } from './Label';
+import { generateGcode, getGcode, updateGcodeConfig } from '../api';
 import { usePlottingPropertiesStore } from '../stores';
 
 export const AdjustProperties = () => {
@@ -15,6 +16,36 @@ export const AdjustProperties = () => {
     if (isNaN(Number(v))) return;
 
     setValues({ sampleCount: v });
+  };
+
+  const handleUpdateConfig = async () => {
+    try {
+      const res = await updateGcodeConfig(values);
+
+      if (res) {
+        console.log('RES:', res);
+      }
+    } catch (error) {
+      console.log('ERR:', error);
+    }
+  };
+
+  const handleGenerateGcode = async () => {
+    try {
+      const isGenerated = await generateGcode();
+      console.log({ isGenerated });
+    } catch (error) {
+      console.log('ERROR GENERATE GCODE:', error);
+    }
+  };
+
+  const handleGetGcode = async () => {
+    try {
+      const gcode = await getGcode();
+      console.log({ gcode });
+    } catch (error) {
+      console.log('ERROR GET GCODE:', error);
+    }
   };
 
   return (
