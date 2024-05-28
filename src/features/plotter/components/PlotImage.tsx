@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
@@ -19,7 +19,7 @@ export const PlotImage = () => {
 
   const handleStartPlotImage = async () => {
     const response = await updateStatus({ startPlotting: 'yes' });
-
+    console.log('START RESP:', response);
     if (response) {
       showToast({ type: 'info', text1: 'Plotting' });
       setIsDisabled(true);
@@ -36,7 +36,18 @@ export const PlotImage = () => {
     }
   };
 
-  const getAutoHome = async () => {
+  const getStartPlottingStatus = async () => {
+    const status = await getStatus();
+
+    if (status) {
+      if (status.startPlotting === 'no') {
+        setIsDisabled(false);
+        setFetchPosition(false);
+      }
+    }
+  };
+
+  const getAutoHomeStatus = async () => {
     const status = await getStatus();
 
     if (status) {
@@ -79,12 +90,13 @@ export const PlotImage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (fetchStatus) {
-        getAutoHome();
+        getAutoHomeStatus();
         setFetchCounter((pc) => pc + 1);
       }
 
       if (fetchPosition) {
         getPosition();
+        getStartPlottingStatus();
         setFetchCounter((pc) => pc + 1);
       }
     }, FETCH_INTERVAL);

@@ -1,14 +1,22 @@
-import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { HelperText, TextInput } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Divider, HelperText, Text, TextInput } from 'react-native-paper';
 
 import { CustomSwitch } from './CustomSwitch';
 import { Label } from './Label';
 import { generateGcode, getGcode, updateGcodeConfig } from '../api';
-import { usePlottingPropertiesStore } from '../stores';
+import { useControlStore, usePlottingPropertiesStore } from '../stores';
+
+import { useTheme } from '@/hooks';
 
 export const AdjustProperties = () => {
+  const { colors } = useTheme();
   const { values, setValues } = usePlottingPropertiesStore();
+  const { setIsDisabled } = useControlStore();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGenerated, setIsGenerated] = useState(false);
+
+  const [gcodes, setGcodes] = useState('');
 
   const handleLineNumberingChange = () => setValues({ lineNumbering: !values.lineNumbering });
   const handleFillChange = () => setValues({ fill: !values.fill });
@@ -18,23 +26,23 @@ export const AdjustProperties = () => {
     setValues({ sampleCount: v });
   };
 
-  const handleUpdateConfig = async () => {
+  const handleGenerateGcode = async () => {
+    setIsGenerating(true);
+    setIsDisabled(false);
+    setIsGenerated(false);
+
     try {
       const res = await updateGcodeConfig(values);
 
       if (res) {
-        console.log('RES:', res);
+        const isGenerated = await generateGcode();
+        console.log({ isGenerated });
+        setIsGenerating(false);
+        setIsGenerated(true);
       }
     } catch (error) {
-      console.log('ERR:', error);
-    }
-  };
+      setIsGenerating(false);
 
-  const handleGenerateGcode = async () => {
-    try {
-      const isGenerated = await generateGcode();
-      console.log({ isGenerated });
-    } catch (error) {
       console.log('ERROR GENERATE GCODE:', error);
     }
   };
@@ -42,11 +50,16 @@ export const AdjustProperties = () => {
   const handleGetGcode = async () => {
     try {
       const gcode = await getGcode();
-      console.log({ gcode });
+      const str = gcode.split('\n').splice(0, 500).join('\n');
+      setGcodes(str);
     } catch (error) {
       console.log('ERROR GET GCODE:', error);
     }
   };
+
+  useEffect(() => {
+    setIsDisabled(true);
+  }, [values]);
 
   return (
     <ScrollView>
@@ -89,10 +102,43 @@ export const AdjustProperties = () => {
           <CustomSwitch title="" switchValue={values.fill} onSwitchChange={handleFillChange} />
         }
       />
+
+      <View style={{ alignItems: 'center', marginVertical: 30 }}>
+        <Button
+          loading={isGenerating}
+          disabled={isGenerating}
+          theme={{ roundness: 2 }}
+          mode="contained"
+          onPress={handleGenerateGcode}>
+          Generate Gcode
+        </Button>
+      </View>
+
+      <Divider />
+
+      {isGenerated && (
+        <View>
+          <Button onPress={handleGetGcode}>Show Generated Gcode</Button>
+          <View style={[styles.gcodeContainer, { borderColor: colors.inverseSurface }]}>
+            <Text style={styles.title}>First 500 Lines</Text>
+            <Divider />
+            <ScrollView>
+              <Text variant="labelLarge">{gcodes}</Text>
+            </ScrollView>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   curveSmoothnessInput: { marginVertical: 10 },
+  gcodeContainer: {
+    height: 200,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+  },
+  title: { alignSelf: 'center', marginBottom: 10 },
 });
