@@ -30,6 +30,97 @@ There is no display on the machine for the control of the 2d plotter machine. Al
 ## Demo
 
 ## Screenshots
+<h4 align="center">
+  Checking Connection
+</h4>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/login-1.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/login-2.png" width="400"/>   
+</div>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/login-3.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/home-1.png" width="400"/>   
+</div>
+
+<br/>
+<br/>
+
+<h4 align="center">
+  Manual Mode
+</h4>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/home-2.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/home-3.png" width="400"/>   
+</div>
+
+<br/>
+<br/>
+
+<h4 align="center">
+  Image Selection
+</h4>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-1.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-2.png" width="400"/>   
+</div>
+
+<br/>
+<br/>
+
+<h4 align="center">
+  Vector Image Detail Level Adjusment
+</h4>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-3.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-4.png" width="400"/>   
+</div>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-5.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-6.png" width="400"/>   
+</div>
+
+<br/>
+<br/>
+
+<h4 align="center">
+  Gcode Properties Adjusment
+</h4>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-7.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-8.png" width="400"/>   
+</div>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-9.png" width="400"/>   
+   &nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-10.png" width="400"/>   
+</div>
+
+<br/>
+<br/>
+
+<h4 align="center">
+  Plotting Image
+</h4>
+
+<div style="display:flex;" align="center">
+   <img src="https://github.com/antinucleus/repo-medias/blob/main/plotter-mobile-application/plot-11.png" width="400"/>   
+</div>
+
 
 ## Tech Stack
 
