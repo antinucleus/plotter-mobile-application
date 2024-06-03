@@ -28,6 +28,11 @@ There is no display on the machine for the control of the 2d plotter machine. Al
 - Ability to adjust the smoothness values of curves to produce gcode
 
 ## Demo
+<h4 align="center">
+  Watch Demo Video on Youtube
+</h4>
+
+[![Watch the video](https://img.youtube.com/vi/F13d5m1M79A/0.jpg)](https://www.youtube.com/watch?v=F13d5m1M79A)
 
 ## Screenshots
 <h4 align="center">
