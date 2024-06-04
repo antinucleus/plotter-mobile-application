@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { RadioButton } from 'react-native-paper';
 
 import { RadioOption } from './RadioOption';

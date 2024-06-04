@@ -69,7 +69,7 @@ export const Plot = () => {
       {activeStep === 2 && <AdjustProperties />}
       {activeStep === 3 && <PlotImage />}
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={styles.buttonContainer}>
         <Button disabled={isDisabled} onPress={handleExit}>
           Exit
         </Button>
@@ -87,7 +87,8 @@ export const Plot = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { height: '100%', padding: 10 },
   avatarContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 10 },
   avatarText: { marginLeft: 10 },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between' },
+  container: { height: '100%', padding: 10 },
 });

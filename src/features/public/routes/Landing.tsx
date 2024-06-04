@@ -75,7 +75,6 @@ export const Landing = () => {
 };
 
 const styles = StyleSheet.create({
-  titleContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   button: { marginVertical: 10 },
   buttonContainer: { flex: 1, justifyContent: 'center' },
   container: {
@@ -83,4 +82,5 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
   },
+  titleContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

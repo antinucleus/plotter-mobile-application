@@ -25,6 +25,7 @@ export const AutoHomeModal = ({ showModal }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  loadingText: { marginBottom: 10 },
   modalContent: {
     height: '100%',
     justifyContent: 'center',
@@ -35,5 +36,4 @@ const styles = StyleSheet.create({
     margin: 10,
     flex: 1 / 4,
   },
-  loadingText: { marginBottom: 10 },
 });

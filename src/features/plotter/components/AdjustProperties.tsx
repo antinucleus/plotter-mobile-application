@@ -103,7 +103,7 @@ export const AdjustProperties = () => {
         }
       />
 
-      <View style={{ alignItems: 'center', marginVertical: 30 }}>
+      <View style={styles.buttonContainer}>
         <Button
           loading={isGenerating}
           disabled={isGenerating}
@@ -133,6 +133,7 @@ export const AdjustProperties = () => {
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: { alignItems: 'center', marginVertical: 30 },
   curveSmoothnessInput: { marginVertical: 10 },
   gcodeContainer: {
     height: 200,
