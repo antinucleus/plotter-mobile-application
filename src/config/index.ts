@@ -1,5 +1,5 @@
-export const API_URL = 'http://192.168.159.107:3000'; // raspberry
-// export const API_URL = 'http://192.168.159.153:3000'; // local
+export const API_URL = 'http://10.42.0.1:3000'; // raspberry
+
 export const STATIC_MEDIA_URL = `${API_URL}/public/result.svg`;
 export const MACHINE_AXIS_X_LIMIT = 145;
 export const MACHINE_AXIS_Y_LIMIT = 210;
