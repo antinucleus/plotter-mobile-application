@@ -90,23 +90,19 @@ export const AdjustProperties = () => {
 
       <Label
         title="Add line numbers"
-        description="If this is enabled, line numbers will be added to the beginning of each gcode commands."
-        children={
-          <CustomSwitch
-            title=""
-            switchValue={values.lineNumbering}
-            onSwitchChange={handleLineNumberingChange}
-          />
-        }
-      />
+        description="If this is enabled, line numbers will be added to the beginning of each gcode commands.">
+        <CustomSwitch
+          title=""
+          switchValue={values.lineNumbering}
+          onSwitchChange={handleLineNumberingChange}
+        />
+      </Label>
 
       <Label
         title="Fill bed"
-        description="If this is enabled, gcode is generated to completely fill the width and height of the machine bed without preserving the aspect ratio of the selected image to be drawn."
-        children={
-          <CustomSwitch title="" switchValue={values.fill} onSwitchChange={handleFillChange} />
-        }
-      />
+        description="If this is enabled, gcode is generated to completely fill the width and height of the machine bed without preserving the aspect ratio of the selected image to be drawn.">
+        <CustomSwitch title="" switchValue={values.fill} onSwitchChange={handleFillChange} />
+      </Label>
 
       <View style={styles.buttonContainer}>
         <Button
