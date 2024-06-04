@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import * as ExpoImagePicker from 'expo-image-picker';
 import React from 'react';
 import { StyleSheet, View, Platform } from 'react-native';

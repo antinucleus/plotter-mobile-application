@@ -111,7 +111,7 @@ export const PlotImage = () => {
       {fetchPosition && <Text variant="labelLarge">Plotting image</Text>}
 
       {fetchPosition && (
-        <View style={{ flexDirection: 'column' }}>
+        <View style={styles.positionTextContainer}>
           <Text variant="titleMedium">Pen Position X: {axisPosition.x} </Text>
           <Text variant="titleMedium">Pen Position Y: {axisPosition.y} </Text>
         </View>
@@ -135,4 +135,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  positionTextContainer: { flexDirection: 'column' },
 });

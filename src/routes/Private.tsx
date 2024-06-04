@@ -9,8 +9,8 @@ const { Navigator, Screen } = createNativeStackNavigator<PrivateRoutesStackParam
 export const Private = () => {
   return (
     <Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-      <Screen name="Plot" component={Plot} />
       <Screen name="Home" component={Home} />
+      <Screen name="Plot" component={Plot} />
     </Navigator>
   );
 };
