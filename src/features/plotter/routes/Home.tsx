@@ -15,15 +15,23 @@ import {
 
 import { FETCH_INTERVAL, MACHINE_AXIS_X_LIMIT, MACHINE_AXIS_Y_LIMIT } from '@/config';
 import { useTheme } from '@/hooks';
+import { createSelectors } from '@/stores';
 import { PrivateRoutesScreenNavigationProp } from '@/types';
+
+const useAxisMovement = createSelectors(useAxisMovementStore);
+const usePenPosition = createSelectors(usePenPositionStore);
+const useAxisPosition = createSelectors(useAxisPositionStore);
+const useControl = createSelectors(useControlStore);
 
 export const Home = () => {
   const navigation = useNavigation<PrivateRoutesScreenNavigationProp>();
   const { colors } = useTheme();
-  const { direction } = useAxisMovementStore();
-  const { setPenPosition } = usePenPositionStore();
-  const { axisPosition, setAxisPosition } = useAxisPositionStore();
-  const { isExited, setIsExited } = useControlStore();
+  const direction = useAxisMovement.use.direction();
+  const setPenPosition = usePenPosition.use.setPenPosition();
+  const axisPosition = useAxisPosition.use.axisPosition();
+  const setAxisPosition = useAxisPosition.use.setAxisPosition();
+  const isExited = useControl.use.isExited();
+  const setIsExited = useControl.use.setIsExited();
   const [distance, setDistance] = useState('');
   const [showModal, setShowModal] = useState(true);
   const [fetchStatus, setFetchStatus] = useState(false);

@@ -8,11 +8,16 @@ import { generateGcode, getGcode, updateGcodeConfig } from '../api';
 import { useControlStore, usePlottingPropertiesStore } from '../stores';
 
 import { useTheme } from '@/hooks';
+import { createSelectors } from '@/stores';
+
+const usePlottingProperties = createSelectors(usePlottingPropertiesStore);
+const useControl = createSelectors(useControlStore);
 
 export const AdjustProperties = () => {
   const { colors } = useTheme();
-  const { values, setValues } = usePlottingPropertiesStore();
-  const { setIsDisabled } = useControlStore();
+  const values = usePlottingProperties.use.values();
+  const setValues = usePlottingProperties.use.setValues();
+  const setIsDisabled = useControl.use.setIsDisabled();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
 

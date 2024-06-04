@@ -10,11 +10,16 @@ import { useControlStore, useSelectedImageStore } from '../stores';
 
 import { BLURLASH, STATIC_MEDIA_URL } from '@/config';
 import { useTheme, useToast } from '@/hooks';
+import { createSelectors } from '@/stores';
+
+const useSelectedImage = createSelectors(useSelectedImageStore);
+const useControl = createSelectors(useControlStore);
 
 export const Preview = () => {
   const { dark } = useTheme();
-  const { image } = useSelectedImageStore();
-  const { isDisabled, setIsDisabled } = useControlStore();
+  const image = useSelectedImage.use.image();
+  const isDisabled = useControl.use.isDisabled();
+  const setIsDisabled = useControl.use.setIsDisabled();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [isConverted, setIsConverted] = useState(false);

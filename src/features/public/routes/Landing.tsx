@@ -6,14 +6,16 @@ import { Button, Surface, Text, Title } from 'react-native-paper';
 import { checkDevice } from '../api';
 
 import { useToast } from '@/hooks';
-import { useAuthStore } from '@/stores';
+import { createSelectors, useAuthStore } from '@/stores';
+
+const useAuth = createSelectors(useAuthStore);
 
 export const Landing = () => {
-  const { setAuth } = useAuthStore();
+  const setAuth = useAuth.use.setAuth();
   const { showToast } = useToast();
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const getConnectionType = async () => {
+  const checkConnection = async () => {
     setIsConnecting(true);
 
     const networkState = await Network.getNetworkStateAsync();
@@ -66,7 +68,7 @@ export const Landing = () => {
           mode="contained"
           loading={isConnecting}
           disabled={isConnecting}
-          onPress={getConnectionType}>
+          onPress={checkConnection}>
           Check Connection
         </Button>
       </View>

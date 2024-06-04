@@ -8,9 +8,13 @@ import { Button } from 'react-native-paper';
 import { useSelectedImageStore } from '../stores';
 
 import { BLURLASH } from '@/config';
+import { createSelectors } from '@/stores';
+
+const useSelectedImage = createSelectors(useSelectedImageStore);
 
 export const ImagePicker = () => {
-  const { image, setImage } = useSelectedImageStore();
+  const image = useSelectedImage.use.image();
+  const setImage = useSelectedImage.use.setImage();
 
   const pickImage = async () => {
     const result = await ExpoImagePicker.launchImageLibraryAsync({

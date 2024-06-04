@@ -8,6 +8,7 @@ import { ImagePicker, BreadCrumb, Step, AdjustProperties, Preview, PlotImage } f
 import { useSelectedImageStore, usePlottingPropertiesStore, useControlStore } from '../stores';
 
 import { useToast } from '@/hooks';
+import { createSelectors } from '@/stores';
 import { PrivateRoutesScreenNavigationProp } from '@/types';
 
 type StepItem = {
@@ -29,12 +30,17 @@ const steps: StepItem[] = [
   },
 ];
 
+const useSelectedImage = createSelectors(useSelectedImageStore);
+const usePlottingProperties = createSelectors(usePlottingPropertiesStore);
+const useControl = createSelectors(useControlStore);
+
 export const Plot = () => {
   const navigation = useNavigation<PrivateRoutesScreenNavigationProp>();
   const [activeStep, setActiveStep] = useState(0);
-  const { image } = useSelectedImageStore();
-  const { values } = usePlottingPropertiesStore();
-  const { setIsExited, isDisabled } = useControlStore();
+  const image = useSelectedImage.use.image();
+  const values = usePlottingProperties.use.values();
+  const setIsExited = useControl.use.setIsExited();
+  const isDisabled = useControl.use.isDisabled();
   const { showToast } = useToast();
 
   const handleStopPlotImage = async () => {
