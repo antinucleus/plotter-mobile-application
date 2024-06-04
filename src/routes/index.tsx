@@ -3,10 +3,12 @@ import React from 'react';
 import { Private } from './Private';
 import { Public } from './Public';
 
-import { useAuthStore } from '@/stores';
+import { createSelectors, useAuthStore } from '@/stores';
+
+const useAuth = createSelectors(useAuthStore);
 
 export const Routes = () => {
-  const { auth } = useAuthStore();
+  const auth = useAuth.use.auth();
 
   return auth ? <Private /> : <Public />;
 };

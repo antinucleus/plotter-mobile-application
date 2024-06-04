@@ -5,6 +5,8 @@ import { Button } from 'react-native-paper';
 import { moveAxis } from '../api';
 import { useAxisMovementStore } from '../stores';
 
+import { createSelectors } from '@/stores';
+
 type Props = {
   disableMoveAxisX: boolean;
   disableMoveAxisY: boolean;
@@ -13,6 +15,8 @@ type Props = {
   distance: string;
 };
 
+const useAxisMovement = createSelectors(useAxisMovementStore);
+
 export const MoveAxis = ({
   disableMoveAxisX,
   disableMoveAxisY,
@@ -20,7 +24,8 @@ export const MoveAxis = ({
   isMovingY,
   distance,
 }: Props) => {
-  const { direction, driveMode } = useAxisMovementStore();
+  const direction = useAxisMovement.use.direction();
+  const driveMode = useAxisMovement.use.driveMode();
 
   const handleMoveAxis = async (axis: string) => {
     const response = await moveAxis({

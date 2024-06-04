@@ -6,10 +6,14 @@ import { movePen } from '../api';
 import { usePenPositionStore } from '../stores';
 
 import { useToast } from '@/hooks';
+import { createSelectors } from '@/stores';
+
+const usePenPosition = createSelectors(usePenPositionStore);
 
 export const MovePen = () => {
   const { showToast } = useToast();
-  const { penPosition, setPenPosition } = usePenPositionStore();
+  const penPosition = usePenPosition.use.penPosition();
+  const setPenPosition = usePenPosition.use.setPenPosition();
 
   const handlePenUp = async () => {
     const result = await movePen({ penPosition: 'up' });

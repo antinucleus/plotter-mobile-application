@@ -8,14 +8,20 @@ import { useAxisPositionStore, useControlStore } from '../stores';
 
 import { FETCH_INTERVAL } from '@/config';
 import { useToast } from '@/hooks';
+import { createSelectors } from '@/stores';
+
+const useAxisPosition = createSelectors(useAxisPositionStore);
+const useControl = createSelectors(useControlStore);
 
 export const PlotImage = () => {
   const { showToast } = useToast();
-  const { axisPosition, setAxisPosition } = useAxisPositionStore();
+  const axisPosition = useAxisPosition.use.axisPosition();
+  const setAxisPosition = useAxisPosition.use.setAxisPosition();
+  const isDisabled = useControl.use.isDisabled();
+  const setIsDisabled = useControl.use.setIsDisabled();
   const [fetchStatus, setFetchStatus] = useState(false);
   const [fetchPosition, setFetchPosition] = useState(false);
   const [fetchCounter, setFetchCounter] = useState(0);
-  const { isDisabled, setIsDisabled } = useControlStore();
 
   const handleStartPlotImage = async () => {
     const response = await updateStatus({ startPlotting: 'yes' });

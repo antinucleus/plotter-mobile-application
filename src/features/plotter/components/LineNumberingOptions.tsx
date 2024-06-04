@@ -5,6 +5,8 @@ import { RadioButton } from 'react-native-paper';
 import { RadioOption } from './RadioOption';
 import { usePlottingPropertiesStore } from '../stores';
 
+import { createSelectors } from '@/stores';
+
 type Option = {
   title: string;
   option: 'on' | 'off';
@@ -16,8 +18,11 @@ const options: Option[] = [
   { title: `Don't add line numbers to gcode commands`, option: 'off' },
 ];
 
+const usePlottingProperties = createSelectors(usePlottingPropertiesStore);
+
 export const LineNumberingOptions = () => {
-  const { values, setValues } = usePlottingPropertiesStore();
+  const values = usePlottingProperties.use.values();
+  const setValues = usePlottingProperties.use.setValues();
 
   const handleRadioValueChange = (value: string) => setValues({ lineNumbering: value === 'on' });
 

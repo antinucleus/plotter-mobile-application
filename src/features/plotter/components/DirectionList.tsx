@@ -6,6 +6,7 @@ import { RadioOption } from './RadioOption';
 import { useAxisMovementStore } from '../stores';
 
 import { Direction } from '@/features/types';
+import { createSelectors } from '@/stores';
 
 type Option = {
   title: string;
@@ -17,8 +18,11 @@ const options: Option[] = [
   { title: 'Negative direction', option: '-' },
 ];
 
+const useAxisMovement = createSelectors(useAxisMovementStore);
+
 export const DirectionList = () => {
-  const { direction, setDirection } = useAxisMovementStore();
+  const direction = useAxisMovement.use.direction();
+  const setDirection = useAxisMovement.use.setDirection();
 
   const handleRadioValueChange = (value: string) => setDirection(value as Direction);
 

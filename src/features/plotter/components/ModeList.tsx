@@ -5,6 +5,7 @@ import { RadioOption } from './RadioOption';
 import { useAxisMovementStore } from '../stores';
 
 import { DriveMode } from '@/features/types';
+import { createSelectors } from '@/stores';
 
 type Option = {
   title: string;
@@ -19,8 +20,11 @@ const options: Option[] = [
   { title: 'Sixteenth step mode (0.01 mm)', option: 'SixteenthStep' },
 ];
 
+const useAxisMovement = createSelectors(useAxisMovementStore);
+
 export const ModeList = () => {
-  const { driveMode, setDriveMode } = useAxisMovementStore();
+  const driveMode = useAxisMovement.use.driveMode();
+  const setDriveMode = useAxisMovement.use.setDriveMode();
 
   const handleRadioValueChange = (value: string) => setDriveMode(value as DriveMode);
 
