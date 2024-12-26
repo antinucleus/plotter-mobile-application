@@ -15,6 +15,10 @@ This application was developed with expo for the control of 2D plotter machine.
 
 There is no display on the machine for the control of the 2d plotter machine. All control of the machine is carried out with this mobile application. With this application, the machine can be tested in manual mode or the desired image can be selected and plotted after the necessary adjustments have been made.
 
+You can access the `full documentation` from the link below.
+
+Pen Plotter Link: [Pen Plotter](https://github.com/antinucleus/pen-plotter)
+
 ## Features
 
 - Warning display to prevent the user from entering the distance exceeding the limit values of the machine
